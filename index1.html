@@ -1,102 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IT Support Scenarios</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Interactive IT Support English — 15 Scenarios</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        max-width: 1000px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-    }
-    h1 {
-        text-align: center;
-    }
-    .scenario {
-        border-bottom: 1px solid #ddd;
-        padding: 15px 0;
-        display: flex;
-        align-items: flex-start;
-    }
-    .scenario-number {
-        flex: 1;
-        font-weight: bold;
-    }
-    .scenario-content {
-        flex: 4;
-    }
-    .dialogue {
-        margin-top: 8px;
-    }
-    .phrases {
-        margin-top: 8px;
-        color: #555;
-    }
-    button {
-        margin-top: 5px;
-        padding: 5px 10px;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+  :root{
+    --bg:#0f172a; /* slate-900 */
+    --card:#111827; /* gray-900 */
+    --muted:#94a3b8; /* slate-400 */
+    --text:#e5e7eb; /* gray-200 */
+    --accent:#22c55e; /* green-500 */
+    --accent2:#3b82f6; /* blue-500 */
+    --border:#1f2937; /* gray-800 */
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,"Noto Sans SC",sans-serif;}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+  header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+  h1{font-size: clamp(1.2rem, 2vw, 1.6rem);margin:0}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px}
+  button{border:1px solid var(--border);background:var(--card);color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer;font-size:14px}
+  button:hover{border-color:var(--accent)}
+  .search{flex:1 1 240px;display:flex;gap:8px}
+  .search input{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:#0b1220;color:var(--text)}
+  .legend{font-size:12px;color:var(--muted)}
+
+  .grid{display:grid;grid-template-columns: 80px 1fr;gap:14px}
+  @media (max-width:700px){.grid{grid-template-columns:1fr}}
+
+  .card{border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;}
+  .num{font-weight:700;font-size:18px;color:var(--accent2)}
+  .title{font-weight:700}
+  .sitch{color:var(--muted);margin-top:4px}
+  .dialog{margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+  .row{display:grid;grid-template-columns: 1fr 1fr;gap:10px;align-items:start}
+  @media (max-width:700px){.row{grid-template-columns:1fr}}
+  .en,.zh{padding:10px;border:1px solid var(--border);border-radius:12px;background:#0b1220}
+  .en header,.zh header{font-weight:700;color:#d1d5db;margin-bottom:6px}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:#d1d5db}
+  mark{background:transparent;color:var(--accent)}
+  .hidden{display:none !important}
 </style>
 </head>
 <body>
-<div class="container">
-    <h1>IT Support English Scenarios</h1>
-    <div id="scenarios"></div>
-</div>
+  <div class="wrap">
+    <header>
+      <h1>Interactive IT Support English — 15 Scenarios</h1>
+      <div class="toolbar">
+        <button id="showBoth">中英对照</button>
+        <button id="showEN">只看英文</button>
+        <button id="showZH">只看中文</button>
+        <button id="expandAll">全部展开</button>
+        <button id="collapseAll">全部折叠</button>
+      </div>
+      <div class="search">
+        <input id="q" placeholder="搜索关键词（英文或中文，如 VPN / 打印机 / password）" />
+      </div>
+    </header>
+    <div class="legend">界面：左列为 <mark>编号+情境说明</mark>，右列展示 <mark>英文对话</mark> 与 <mark>中文翻译</mark>。按场景顺序排列，完全本地运行。</div>
+
+    <div id="list"></div>
+  </div>
+
 <script>
-const scenarios = [
-    { title: "电脑无法启动", scenario: "用户报告台式机无法开机。", dialogue: `User: My desktop won’t power on at all.<br>你：Let’s first check the basics — is the power cable firmly connected and the outlet working?<br>User: Yes, I tested the outlet with my phone charger, it works.<br>你：Alright, I’ll bring a spare power supply and test it on-site.`, phrases: "won’t power on = 无法开机; check the basics = 检查基本情况; firmly connected = 连接牢固; on-site test = 现场测试" },
-    { title: "显示器无信号", scenario: "显示器显示无信号，但电脑已开机。", dialogue: `User: The monitor says “No signal,” but the PC is on.<br>你：It could be a loose cable or the wrong input source. Can you check if the HDMI cable is fully plugged in?<br>User: Oh, it was in the wrong port. Now it works. Thanks!`, phrases: "no signal = 无信号; input source = 输入源; fully plugged in = 插紧" },
-    { title: "打印机卡纸", scenario: "打印机提示纸张卡住。", dialogue: `User: The printer keeps showing “Paper Jam.”<br>你：I’ll clear the jam and restart the print queue. Please avoid overloading the tray next time.<br>User: Got it, thanks.`, phrases: "print queue = 打印队列; overload the tray = 装纸过多; clear the jam = 清理卡纸" },
-    { title: "VPN连接失败", scenario: "VPN连接超时。", dialogue: `User: The VPN keeps timing out.<br>你：Have you tried connecting from a different network to rule out local issues?<br>User: Yes, I tried home Wi-Fi and my hotspot — same result.<br>你：Then it’s likely a server-side problem. I’ll escalate this to the network team.`, phrases: "timing out = 超时; rule out = 排除; server-side problem = 服务器端问题; escalate to = 升级到" },
-    { title: "Wi-Fi信号弱", scenario: "会议室Wi-Fi信号弱。", dialogue: `User: The Wi-Fi is super slow in the conference room.<br>你：That area’s coverage is weak. I can request an access point installation.<br>User: That would be great.`, phrases: "coverage is weak = 覆盖弱; request an access point installation = 申请安装无线接入点" },
-    { title: "内部网站打不开", scenario: "无法访问公司HR门户网站。", dialogue: `User: I can’t access the HR portal. It just says “Page not found.”<br>你：Are you connected to the corporate network or VPN?<br>User: Oh, I forgot to connect to VPN. It works now.`, phrases: "corporate network = 公司网络; page not found = 页面不存在" },
-    { title: "Outlook无法发送邮件", scenario: "邮件卡在发件箱。", dialogue: `User: My emails are stuck in the Outbox.<br>你：Can you tell me the exact error message?<br>User: It says “Relay access denied.”<br>你：That’s likely an SMTP authentication issue. I’ll reconfigure your account.`, phrases: "stuck in the Outbox = 卡在发件箱; SMTP authentication = SMTP 身份验证" },
-    { title: "无法安装软件", scenario: "缺少管理员权限安装软件。", dialogue: `User: I need Adobe Acrobat, but it says I don’t have admin rights.<br>你：We restrict installations for security. I can push it through Intune.<br>User: Perfect, thanks.`, phrases: "admin rights = 管理员权限; push through Intune = 通过 Intune 推送" },
-    { title: "Teams会议没有声音", scenario: "Teams会议中没有声音。", dialogue: `User: I can’t hear anything in Teams.<br>你：Check if your output device is set to the correct speakers.<br>User: Oh, it was set to my monitor. Works now.`, phrases: "output device = 输出设备; set to = 设置为" },
-    { title: "密码过期", scenario: "AD账户密码过期。", dialogue: `User: My account keeps saying “Password expired.”<br>你：You can reset it via the self-service portal, or I can do it for you.<br>User: I’ll do it myself. Thanks.`, phrases: "password expired = 密码过期; self-service portal = 自助门户" },
-    { title: "账号被锁", scenario: "多次输错密码导致账号锁定。", dialogue: `User: It says my account is locked.<br>你：You might have entered the wrong password too many times. I’ll unlock it in Active Directory.`, phrases: "account is locked = 账号被锁; Active Directory (AD) = 活动目录" },
-    { title: "可疑邮件", scenario: "用户收到钓鱼邮件。", dialogue: `User: I got an email asking for my login info.<br>你：That’s phishing. Don’t click any links. Please forward it to the security team.`, phrases: "phishing = 钓鱼邮件; forward to = 转发给" },
-    { title: "升级问题", scenario: "问题持续一周未解决。", dialogue: `User: This issue has been happening for a week.<br>你：I understand the urgency. I’ll escalate it to Tier 2 support.`, phrases: "urgency = 紧急性; Tier 2 support = 二线支持" },
-    { title: "更新进度", scenario: "用户询问请求处理进度。", dialogue: `User: Any update on my request?<br>你：Tier 2 is still investigating. I’ll let you know once they provide a fix.`, phrases: "provide a fix = 提供修复方案" },
-    { title: "结束工单", scenario: "关闭支持工单。", dialogue: `User: Thanks for fixing my laptop.<br>你：My pleasure. I’ll go ahead and close the ticket.`, phrases: "close the ticket = 关闭工单" }
+const data = [
+  {
+    title: "VPN Connection Issue / VPN 连接问题",
+    situation: "用户在咖啡馆连公司 VPN 超时，提示认证服务器不可达。",
+    en: [
+      "User: Hi, I’m trying to connect to our corporate VPN, but it keeps timing out. I’ve already rebooted my laptop twice.",
+      "IT: Understood. Are you on a stable network? Have you tried switching from Wi‑Fi to a wired connection? Also, what exact error code do you see?",
+      "User: It says ‘Authentication server not reachable.’ I’m working from a café.",
+      "IT: Public Wi‑Fi often blocks VPN handshakes. Please try tethering to mobile data and attempt the connection again.",
+      "IT: If that works, I’ll whitelist your home IP and review our SSL VPN logs for failed negotiations."
+    ],
+    zh: [
+      "用户：我在连公司的 VPN，但一直超时。我已经重启笔记本两次了。",
+      "IT：明白。你现在网络稳定吗？试过从 Wi‑Fi 换成有线连接吗？另外，具体的错误码是什么？",
+      "用户：显示“认证服务器不可达”。我在咖啡馆办公。",
+      "IT：公共 Wi‑Fi 常会拦截 VPN 握手。请先用手机热点试一下再连接。",
+      "IT：如果这样可行，我会把你家里的 IP 加入白名单，并检查 SSL VPN 日志中的失败协商记录。"
+    ]
+  },
+  {
+    title: "Email Delivery Delay / 邮件延迟到达",
+    situation: "客户称未收到带大附件的邮件。",
+    en: [
+      "User: My client still hasn't received the proposal I sent yesterday, even though it shows in my Sent folder.",
+      "IT: I’ll review our mail relay logs. Large attachments may be deferred or blocked by the recipient’s spam filter. Do you recall the file size?",
+      "User: Roughly 25 MB.",
+      "IT: That likely exceeds their inbound limit. Please compress it or share via OneDrive using a time‑limited, password‑protected link.",
+      "IT: I’ll also add SPF/DKIM/DMARC checks to ensure our domain reputation isn’t causing throttling."
+    ],
+    zh: [
+      "用户：我昨天发的方案对方还没收到，但在发件箱能看到。",
+      "IT：我先查邮件中继日志。大附件可能被延迟或被对方的垃圾邮件过滤器拦截。你还记得文件大小吗？",
+      "用户：大约 25 MB。",
+      "IT：这很可能超过了对方的入站限制。请压缩后再发，或用 OneDrive 共享限时且受密码保护的链接。",
+      "IT：我也会确认 SPF/DKIM/DMARC 状态，避免因为域名信誉导致被限流。"
+    ]
+  },
+  {
+    title: "Printer Not Responding / 打印机无响应",
+    situation: "共享打印机显示离线，疑似网络配置问题。",
+    en: [
+      "User: The office printer isn’t responding, even though it’s powered on.",
+      "IT: Does it show as ‘Offline’ in your print queue? If so, we might be dealing with an IP conflict.",
+      "User: Yes, it says Offline.",
+      "IT: I’ll check the printer web UI and DHCP leases. If the lease expired, I’ll assign a static IP and update the print server mapping.",
+      "IT: After that, please remove and re‑add the printer using the new queue."
+    ],
+    zh: [
+      "用户：办公室的打印机有电但没反应。",
+      "IT：在你的打印队列里显示“离线”吗？如果是，可能是 IP 冲突。",
+      "用户：是的，显示离线。",
+      "IT：我先看打印机的网页管理和 DHCP 租约。如果租约过期，我会给它设静态 IP，并更新打印服务器上的映射。",
+      "IT：之后请把打印机删除再用新队列重新添加。"
+    ]
+  },
+  {
+    title: "MFA Lockout / 多因素认证被锁",
+    situation: "用户丢失手机，无法通过 MFA 登录。",
+    en: [
+      "User: I lost my phone and can’t pass MFA.",
+      "IT: I can temporarily disable MFA, but I’ll need to verify your identity first. Please confirm your employee ID and last successful login time.",
+      "User: It’s 10482, and I last logged in yesterday around 9 PM.",
+      "IT: Thanks. Once you have a new device, re‑register the Authenticator app and add a backup method to prevent future lockouts."
+    ],
+    zh: [
+      "用户：我把手机弄丢了，过不了 MFA。",
+      "IT：我可以临时关闭 MFA，但需要先核验你的身份。请提供工号和上一次成功登录的时间。",
+      "用户：工号 10482，昨晚 9 点左右成功登录过。",
+      "IT：收到。等你有了新设备，请重新注册认证器，并添加备用验证方式，避免再次被锁。"
+    ]
+  },
+  {
+    title: "Software Install & License / 软件安装与授权",
+    situation: "用户申请安装 Adobe Illustrator，涉及授权与部署。",
+    en: [
+      "User: I need Adobe Illustrator for a project due tomorrow.",
+      "IT: Illustrator requires a Creative Cloud license. Do you already have an assigned seat, or should I open a request with Procurement?",
+      "User: My manager approved it last month.",
+      "IT: I’ll verify in the asset system and push the package via Intune. You’ll see a notification in Company Portal shortly."
+    ],
+    zh: [
+      "用户：我需要安装 Adobe Illustrator，项目明天到期。",
+      "IT：Illustrator 需要 Creative Cloud 授权。你已经分配到席位了吗，还是需要我向采购申请？",
+      "用户：经理上个月批准过。",
+      "IT：我会在资产系统核对，并通过 Intune 下发安装包。稍后你会在 Company Portal 收到通知。"
+    ]
+  },
+  {
+    title: "Account Locked After Attempts / 多次尝试后账号被锁",
+    situation: "AD 日志显示多次失败登录，账号被锁定。",
+    en: [
+      "User: I think I locked my account after typing the wrong password.",
+      "IT: Confirmed — AD shows several failed attempts. I’ll unlock it now. Please reset your password and avoid incremental variants to comply with policy.",
+      "User: Will do."
+    ],
+    zh: [
+      "用户：我可能输错多次密码把账号锁了。",
+      "IT：确认——AD 里有多次失败记录。我现在帮你解锁。请立刻改密，并避免在旧密码基础上小幅修改，以符合策略。",
+      "用户：好的。"
+    ]
+  },
+  {
+    title: "File Access Denied / 共享文件访问被拒",
+    situation: "共享文件夹权限被调整，用户无法访问。",
+    en: [
+      "User: I can’t open a shared folder I used yesterday — it says Access denied.",
+      "IT: The ACLs may have changed. I’ll check the security group membership and the file server’s permission inheritance.",
+      "User: What are ACLs?",
+      "IT: Access Control Lists — who can access what. I’ll re‑add your team group if it was removed and audit the change."
+    ],
+    zh: [
+      "用户：昨天还能用的共享文件夹现在打不开了，提示拒绝访问。",
+      "IT：可能是 ACL 被改了。我会检查安全组成员以及文件服务器上的权限继承。",
+      "用户：ACL 是什么？",
+      "IT：访问控制列表，决定谁能访问什么。如果你们组被移除了，我会重新添加并审计这次变更。"
+    ]
+  },
+  {
+    title: "Excel Freezing / Excel 频繁卡死",
+    situation: "打开特定文件即卡死，可能涉及宏或外链。",
+    en: [
+      "User: Excel freezes whenever I open a particular workbook.",
+      "IT: It could be corrupted macros or external links to unavailable sources. I’ll try Open and Repair and check for broken references to retired SharePoint sites.",
+      "User: Thanks, I’ll wait for your update."
+    ],
+    zh: [
+      "用户：只要打开某个工作簿 Excel 就卡死。",
+      "IT：可能是宏损坏或外部链接已失效。我会先用“打开并修复”，并排查是否引用了已下线的 SharePoint 站点。",
+      "用户：好的，等你消息。"
+    ]
+  },
+  {
+    title: "Dept‑Wide Network Slowdown / 部门网络整体变慢",
+    situation: "某个 VLAN 段流量激增，工作时间网络变慢。",
+    en: [
+      "User: Our entire department is experiencing very slow internet today.",
+      "IT: I’m seeing unusual spikes on your VLAN. It might be a large sync or backup running during business hours. I’ll coordinate with Infrastructure to throttle and reschedule it.",
+      "User: Appreciate it."
+    ],
+    zh: [
+      "用户：我们整个部门今天网速都很慢。",
+      "IT：你们 VLAN 的流量异常升高，可能是大型同步或备份在工作时间运行。我会和基础架构团队协商限速并改期。",
+      "用户：谢谢。"
+    ]
+  },
+  {
+    title: "Phishing Report / 钓鱼邮件上报",
+    situation: "用户收到冒充 IT 的钓鱼邮件。",
+    en: [
+      "User: I got an email from ‘IT Support’ asking me to verify my password via a link.",
+      "IT: That’s phishing. Don’t click it. Please forward the message to Security and delete it. I’ll block the sender domain and check if others received it.",
+      "User: Will do."
+    ],
+    zh: [
+      "用户：收到一封自称 IT Support 的邮件，要我点链接验证密码。",
+      "IT：这是钓鱼。不要点击。请把邮件转发给安全团队后删除。我会封禁发件域并检查是否有其他人收到。",
+      "用户：明白。"
+    ]
+  },
+  {
+    title: "RDP Lag / 远程桌面卡顿",
+    situation: "连接数据中心服务器的远程桌面很卡。",
+    en: [
+      "User: My Remote Desktop session to the data center is extremely laggy.",
+      "IT: I’ll run a latency and packet‑loss check to determine if it’s network‑related or server resource exhaustion. If CPU is pegged, we’ll schedule a maintenance reboot.",
+      "User: Thanks."
+    ],
+    zh: [
+      "用户：连数据中心服务器的远程桌面非常卡。",
+      "IT：我会检查延迟和丢包，判断是网络还是服务器资源耗尽。如果 CPU 满载，我们会安排维护窗口重启。",
+      "用户：好的。"
+    ]
+  },
+  {
+    title: "SSL Certificate Expired / 证书过期导致警告",
+    situation: "访问内部 HR 门户出现连接不安全警告。",
+    en: [
+      "User: I’m seeing ‘Your connection is not private’ on the HR portal.",
+      "IT: The SSL certificate likely expired. I’ll renew it with our CA and update the load balancer. You may need to clear cache after the change propagates.",
+      "User: Understood."
+    ],
+    zh: [
+      "用户：访问 HR 门户时提示“你的连接不是私密连接”。",
+      "IT：可能是 SSL 证书过期。我会向证书颁发机构续期并更新到负载均衡器上。变更生效后你可能需要清缓存。",
+      "用户：明白。"
+    ]
+  },
+  {
+    title: "Low Disk Space / 磁盘空间不足",
+    situation: "用户频繁收到空间不足提醒。",
+    en: [
+      "User: I keep getting Low disk space warnings.",
+      "IT: I’ll review your profile size. Teams cache and Outlook OSTs often bloat. We can archive old mail and redirect large folders to OneDrive.",
+      "User: Sounds good."
+    ],
+    zh: [
+      "用户：总是弹出磁盘空间不足的警告。",
+      "IT：我会查看你的用户配置文件体积。Teams 缓存和 Outlook 的 OST 文件常常膨胀。我们可以存档旧邮件，并把大文件夹重定向到 OneDrive。",
+      "用户：可以。"
+    ]
+  },
+  {
+    title: "Zoom Mic Not Working / 会议麦克风无声",
+    situation: "Zoom 里别人听不到你的声音。",
+    en: [
+      "User: People can’t hear me on Zoom, but I can hear them.",
+      "IT: Ensure the correct microphone is selected in Zoom. If that’s correct, I’ll reinstall the audio driver and perform a loopback test to confirm the input path.",
+      "User: Thanks."
+    ],
+    zh: [
+      "用户：在 Zoom 里别人听不到我，但我能听到他们。",
+      "IT：先确认 Zoom 选择了正确的麦克风。如果没问题，我会重装声卡驱动并做回环测试确认输入链路。",
+      "用户：谢谢。"
+    ]
+  },
+  {
+    title: "Password Expired / 密码过期重置",
+    situation: "因策略 90 天密码过期，用户无法登录。",
+    en: [
+      "User: I can’t log in — it says my password has expired.",
+      "IT: That’s expected after 90 days per policy. Please use the self‑service portal to reset. If you’re remote, connect VPN first so your cached credentials update.",
+      "User: Got it."
+    ],
+    zh: [
+      "用户：我登录不了，提示密码过期。",
+      "IT：根据策略 90 天会过期。请用自助门户改密。如果你在外网，先连 VPN 以便本地缓存的凭据同步更新。",
+      "用户：明白。"
+    ]
+  },
+  {
+    title: "Ticket Escalation & Updates / 工单升级与进度",
+    situation: "长时间未解决的问题需要升级并同步进度。",
+    en: [
+      "User: This issue has been dragging on for a week.",
+      "IT: I understand the urgency. I’m escalating to Tier 2 with logs and reproduction steps. I’ll keep you updated once they provide a workaround or permanent fix.",
+      "User: Appreciate the follow‑up."
+    ],
+    zh: [
+      "用户：这个问题已经拖了一周。",
+      "IT：理解你的紧急性。我会升级给二线并附上日志和复现步骤。一有临时方案或永久修复就同步你。",
+      "用户：谢谢持续跟进。"
+    ]
+  }
 ];
 
-function speak(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    speechSynthesis.speak(utterance);
+function buildCard(idx, item){
+  const wrap = document.createElement('div');
+  wrap.className = 'card';
+  wrap.innerHTML = `
+    <div class="grid">
+      <div>
+        <div class="num">#${idx+1}</div>
+        <div class="title">${item.title}</div>
+        <div class="sitch">情境：${item.situation}</div>
+        <details><summary>常见关键词</summary>
+          <div class="sitch" style="margin-top:6px">示例：VPN handshake, mail relay logs, static IP, ACL, latency, SSL certificate, OST, loopback test, policy, escalation</div>
+        </details>
+      </div>
+      <div class="dialog">
+        <div class="row">
+          <div class="en">
+            <header>English</header>
+            ${item.en.map(l=>`<div>${l}</div>`).join('')}
+          </div>
+          <div class="zh">
+            <header>中文</header>
+            ${item.zh.map(l=>`<div>${l}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  return wrap;
 }
 
-const container = document.getElementById('scenarios');
-scenarios.forEach((s, i) => {
-    const div = document.createElement('div');
-    div.className = 'scenario';
-    div.innerHTML = `
-        <div class="scenario-number">${i+1}</div>
-        <div class="scenario-content">
-            <b>${s.title}</b><br>
-            <i>${s.scenario}</i>
-            <div class="dialogue">${s.dialogue}</div>
-            <div class="phrases"><b>Key Phrases:</b> ${s.phrases}</div>
-            <button onclick="speak(\`${s.dialogue.replace(/<br>/g, ' ').replace(/你：/g, '').replace(/User:/g, 'User says').replace(/<b>|<\/b>/g, '')}\`)"'>🔊 Play Audio</button>
-        </div>
-    `;
-    container.appendChild(div);
+const list = document.getElementById('list');
+
+data.forEach((it,i)=> list.appendChild(buildCard(i,it)));
+
+// Toolbar actions
+const showBothBtn = document.getElementById('showBoth');
+const showENBtn = document.getElementById('showEN');
+const showZHBtn = document.getElementById('showZH');
+const expandAllBtn = document.getElementById('expandAll');
+const collapseAllBtn = document.getElementById('collapseAll');
+const q = document.getElementById('q');
+
+function updateView(mode){
+  document.querySelectorAll('.en').forEach(e=>e.classList.toggle('hidden', mode==='zh'));
+  document.querySelectorAll('.zh').forEach(e=>e.classList.toggle('hidden', mode==='en'));
+}
+
+showBothBtn.addEventListener('click', ()=>updateView('both'));
+showENBtn.addEventListener('click', ()=>updateView('en'));
+showZHBtn.addEventListener('click', ()=>updateView('zh'));
+
+expandAllBtn.addEventListener('click', ()=>{
+  document.querySelectorAll('details').forEach(d=>d.open=true);
 });
+collapseAllBtn.addEventListener('click', ()=>{
+  document.querySelectorAll('details').forEach(d=>d.open=false);
+});
+
+q.addEventListener('input', (e)=>{
+  const term = e.target.value.trim().toLowerCase();
+  const cards = [...document.querySelectorAll('#list>.card')];
+  cards.forEach((card, idx)=>{
+    const txt = card.textContent.toLowerCase();
+    card.style.display = term && !txt.includes(term) ? 'none' : '';
+  });
+});
+
+// default to bilingual
+updateView('both');
 </script>
 </body>
 </html>
