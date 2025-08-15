@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Support English Practice</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        width: 90%;
+        max-width: 700px;
+    }
+    h1 {
+        font-size: 1.5em;
+        text-align: center;
+    }
+    .scenario {
+        font-weight: bold;
+        margin-top: 15px;
+    }
+    .dialogue, .phrases {
+        margin-top: 10px;
+        display: none;
+    }
+    button {
+        margin-top: 15px;
+        padding: 10px 15px;
+        font-size: 1em;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .btn-show { background-color: #3498db; color: white; }
+    .btn-next { background-color: #2ecc71; color: white; margin-left: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>IT Support English Practice</h1>
+    <div id="scenario" class="scenario"></div>
+    <div id="dialogue" class="dialogue"></div>
+    <div id="phrases" class="phrases"></div>
+    <div>
+        <button class="btn-show" onclick="showAnswer()">Show Answer</button>
+        <button class="btn-next" onclick="nextScenario()">Next Scenario</button>
+    </div>
+</div>
+
+<script>
+const scenarios = [
+    {
+        title: "1. 电脑无法启动",
+        scenario: "User reports their desktop won't power on.",
+        dialogue: `<b>User:</b> My desktop won’t power on at all.<br><b>You:</b> Let’s first check the basics — is the power cable firmly connected and the outlet working?<br><b>User:</b> Yes, I tested the outlet with my phone charger, it works.<br><b>You:</b> Alright, I’ll bring a spare power supply and test it on-site.`,
+        phrases: "won’t power on = 无法开机; check the basics = 检查基本情况; firmly connected = 连接牢固; on-site test = 现场测试"
+    },
+    {
+        title: "2. 显示器无信号",
+        scenario: "User says monitor shows 'No signal' but PC is on.",
+        dialogue: `<b>User:</b> The monitor says “No signal,” but the PC is on.<br><b>You:</b> It could be a loose cable or the wrong input source. Can you check if the HDMI cable is fully plugged in?<br><b>User:</b> Oh, it was in the wrong port. Now it works. Thanks!`,
+        phrases: "no signal = 无信号; input source = 输入源; fully plugged in = 插紧"
+    },
+    {
+        title: "3. 打印机卡纸",
+        scenario: "Printer shows 'Paper Jam'.",
+        dialogue: `<b>User:</b> The printer keeps showing “Paper Jam.”<br><b>You:</b> I’ll clear the jam and restart the print queue. Please avoid overloading the tray next time.<br><b>User:</b> Got it, thanks.`,
+        phrases: "print queue = 打印队列; overload the tray = 装纸过多; clear the jam = 清理卡纸"
+    },
+    {
+        title: "4. VPN 连接失败",
+        scenario: "User can't connect to VPN, keeps timing out.",
+        dialogue: `<b>User:</b> The VPN keeps timing out.<br><b>You:</b> Have you tried connecting from a different network to rule out local issues?<br><b>User:</b> Yes, I tried home Wi-Fi and my hotspot — same result.<br><b>You:</b> Then it’s likely a server-side problem. I’ll escalate this to the network team.`,
+        phrases: "timing out = 超时; rule out = 排除; server-side problem = 服务器端问题; escalate to = 升级到"
+    },
+    {
+        title: "5. Wi-Fi 信号弱",
+        scenario: "Wi-Fi is slow in conference room.",
+        dialogue: `<b>User:</b> The Wi-Fi is super slow in the conference room.<br><b>You:</b> That area’s coverage is weak. I can request an access point installation.<br><b>User:</b> That would be great.`,
+        phrases: "coverage is weak = 覆盖弱; request an access point installation = 申请安装无线接入点"
+    },
+    {
+        title: "6. 内部网站打不开",
+        scenario: "User can't access HR portal.",
+        dialogue: `<b>User:</b> I can’t access the HR portal. It just says “Page not found.”<br><b>You:</b> Are you connected to the corporate network or VPN?<br><b>User:</b> Oh, I forgot to connect to VPN. It works now.`,
+        phrases: "corporate network = 公司网络; page not found = 页面不存在"
+    },
+    {
+        title: "7. Outlook 无法发送邮件",
+        scenario: "Emails stuck in Outbox.",
+        dialogue: `<b>User:</b> My emails are stuck in the Outbox.<br><b>You:</b> Can you tell me the exact error message?<br><b>User:</b> It says “Relay access denied.”<br><b>You:</b> That’s likely an SMTP authentication issue. I’ll reconfigure your account.`,
+        phrases: "stuck in the Outbox = 卡在发件箱; SMTP authentication = SMTP 身份验证"
+    },
+    {
+        title: "8. 无法安装软件",
+        scenario: "User needs admin rights to install software.",
+        dialogue: `<b>User:</b> I need Adobe Acrobat, but it says I don’t have admin rights.<br><b>You:</b> We restrict installations for security. I can push it through Intune.<br><b>User:</b> Perfect, thanks.`,
+        phrases: "admin rights = 管理员权限; push through Intune = 通过 Intune 推送"
+    },
+    {
+        title: "9. Teams 会议没有声音",
+        scenario: "No sound in Teams meeting.",
+        dialogue: `<b>User:</b> I can’t hear anything in Teams.<br><b>You:</b> Check if your output device is set to the correct speakers.<br><b>User:</b> Oh, it was set to my monitor. Works now.`,
+        phrases: "output device = 输出设备; set to = 设置为"
+    },
+    {
+        title: "10. 密码过期",
+        scenario: "Account password expired.",
+        dialogue: `<b>User:</b> My account keeps saying “Password expired.”<br><b>You:</b> You can reset it via the self-service portal, or I can do it for you.<br><b>User:</b> I’ll do it myself. Thanks.`,
+        phrases: "password expired = 密码过期; self-service portal = 自助门户"
+    },
+    {
+        title: "11. 账号被锁",
+        scenario: "Account locked after wrong password attempts.",
+        dialogue: `<b>User:</b> It says my account is locked.<br><b>You:</b> You might have entered the wrong password too many times. I’ll unlock it in Active Directory.`,
+        phrases: "account is locked = 账号被锁; Active Directory (AD) = 活动目录"
+    },
+    {
+        title: "12. 可疑邮件",
+        scenario: "User receives phishing email.",
+        dialogue: `<b>User:</b> I got an email asking for my login info.<br><b>You:</b> That’s phishing. Don’t click any links. Please forward it to the security team.`,
+        phrases: "phishing = 钓鱼邮件; forward to = 转发给"
+    },
+    {
+        title: "13. 升级问题",
+        scenario: "Issue ongoing for a week.",
+        dialogue: `<b>User:</b> This issue has been happening for a week.<br><b>You:</b> I understand the urgency. I’ll escalate it to Tier 2 support.`,
+        phrases: "urgency = 紧急性; Tier 2 support = 二线支持"
+    },
+    {
+        title: "14. 更新进度",
+        scenario: "User asks for update on request.",
+        dialogue: `<b>User:</b> Any update on my request?<br><b>You:</b> Tier 2 is still investigating. I’ll let you know once they provide a fix.`,
+        phrases: "provide a fix = 提供修复方案"
+    },
+    {
+        title: "15. 结束工单",
+        scenario: "Closing support ticket.",
+        dialogue: `<b>User:</b> Thanks for fixing my laptop.<br><b>You:</b> My pleasure. I’ll go ahead and close the ticket.`,
+        phrases: "close the ticket = 关闭工单"
+    }
+];
+
+let currentIndex = 0;
+
+function nextScenario() {
+    currentIndex = Math.floor(Math.random() * scenarios.length);
+    document.getElementById('scenario').innerHTML = `<b>${scenarios[currentIndex].title}</b><br>${scenarios[currentIndex].scenario}`;
+    document.getElementById('dialogue').style.display = 'none';
+    document.getElementById('phrases').style.display = 'none';
+}
+
+function showAnswer() {
+    document.getElementById('dialogue').innerHTML = `<b>Dialogue:</b><br>${scenarios[currentIndex].dialogue}`;
+    document.getElementById('phrases').innerHTML = `<b>Key Phrases:</b> ${scenarios[currentIndex].phrases}`;
+    document.getElementById('dialogue').style.display = 'block';
+    document.getElementById('phrases').style.display = 'block';
+}
+
+// Load first scenario
+nextScenario();
+</script>
+</body>
+</html>
